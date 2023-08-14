@@ -1,6 +1,6 @@
 # SvelteKit with Integrated WebSocket Server
 
-*Updated: July 4, 2023, compatible with SvelteKit 1.21.0 and Svelte 4.0.4*
+_Updated: July 4, 2023, compatible with SvelteKit 1.21.0 and Svelte 4.0.4_
 
 First-class support for WebSockets within SvelteKit by attaching a WebSocket server to the global state.
 
@@ -31,7 +31,7 @@ pnpm run build
 pnpm run prodServer
 ```
 
-***
+---
 
 ## Write-up
 
@@ -57,7 +57,7 @@ This isn't ideal and it turns out that there's a better way to integrate a WebSo
 
 Rather than build the WebSocket server and/or logic as an isolated component, we can define a set of utility functions to:
 
-1. Create a new WebSocket server and attach it to a *global instance variable*.
+1. Create a new WebSocket server and attach it to a _global instance variable_.
 2. Define a function that upgrade certain HTTP requests to WebSocket connections.
 
 These utilities will be used in development and production and reside within the SvelteKit project structure: `$lib/server/webSocketUtils.ts`.
@@ -72,6 +72,7 @@ For production, we'll set up a new file at the top-level directory called `prodS
 In both development and production, the trick is to attach the WebSocket server to [`globalThis`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/globalThis), representing the global object. This WebSocket server instance is attached to the global state via a custom JavaScript Symbol via [`Symbol.for()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/for). This guarantees predictable, runtime-wide access to the server instance.
 
 What this allows for is full control of the WebSocket server in our SvelteKit server-side logic. In `hooks.server.ts`, we can call a setup function that extends the WebSocket server and includes any logic that would need to run when either the development or production server is established. In addition, we can define custom logic in the `handler` function to attach the WebSocket server context to [`event.locals`](https://kit.svelte.dev/docs/types#app-locals). With this, you could:
+
 - Integrate custom authentication logic in the `handler` function.
 - Emit WebSocket events to clients directly from server-side endpoints (for example `GET` handlers).
 
